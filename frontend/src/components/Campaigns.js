@@ -68,40 +68,32 @@ const Campaigns = () => {
     fetchData();
   }, []);
 
-  const handleGenerateMessage = async () => {
-    setGenerating(true);
+const handleGenerateMessage = async () => {
+    if (!subject.trim()) {
+      setMessage({ text: "Subject is required to generate an email!", severity: "warning" });
+      setOpenSnackbar(true);
+      return;
+    }
+
+    setLoading(true);
     try {
-      console.log("Отправка запроса на:", `${API_BASE_URL}/generate/`);
       const response = await fetch(`${API_BASE_URL}/generate/`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        }
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subject }),
       });
-  
+
       const data = await response.json();
-      console.log("Ответ API:", data);
-  
       if (response.ok) {
-        const fullMessage = data.phishing_email;
-  
-        // Разбираем сообщение
-        const subjectMatch = fullMessage.match(/^Subject:\s*(.*)/m); // Находим строку с "Subject:"
-        const extractedSubject = subjectMatch ? subjectMatch[1].trim() : "No Subject"; // Извлекаем текст после "Subject:"
-        const bodyText = fullMessage.replace(/^Subject:.*\n/, "").trim(); // Убираем строку "Subject:" из текста
-  
-        setSubject(extractedSubject);
-        setBody(bodyText);
-  
-        setMessage({ text: "Message generated successfully!", severity: "success" });
+        setBody(data.email); // Replace body with generated email
+        setMessage({ text: "Email generated successfully!", severity: "success" });
       } else {
-        setMessage({ text: "Failed to generate message.", severity: "error" });
+        setMessage({ text: data.error || "Failed to generate email.", severity: "error" });
       }
     } catch (error) {
-      console.error("Ошибка при запросе:", error);
-      setMessage({ text: "Error generating message!", severity: "error" });
+      setMessage({ text: "Error generating email!", severity: "error" });
     } finally {
-      setGenerating(false);
+      setLoading(false);
       setOpenSnackbar(true);
     }
   };
@@ -213,44 +205,29 @@ const Campaigns = () => {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12}>
-              <TextField label="Subject" fullWidth value={subject} onChange={(e) => setSubject(e.target.value)} required disabled={sending} />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                label="Body"
-                fullWidth
-                multiline
-                rows={10}
-                value={body}
-                onChange={(e) => setBody(e.target.value)}
-                required
-                disabled={sending}
-                sx={{ minHeight: "200px" }}
-              />
-              <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: 1 }}>
-                <Button
-                  variant="contained"
-                  onClick={handleGenerateMessage}
-                  disabled={generating || sending}
-                  sx={{
-                    background: generating ? "gray" : "linear-gradient(135deg, #011843,rgb(127, 161, 220))",
-                    color: "#fff",
-                    "&:hover": { background: generating ? "gray" : "linear-gradient(135deg, #01102c,rgb(137, 174, 216))" }
-                  }}
-                >
-                  {generating ? (
-                    <>
-                      <CircularProgress size={20} sx={{ color: "white", marginRight: 1 }} /> Generating...
-                    </>
-                  ) : (
-                    "Generate Message"
-                  )}
-                </Button>
-              </Box>
-            </Grid>
-
+           <Grid item xs={12}>
+            <TextField label="Subject" fullWidth value={subject} onChange={(e) => setSubject(e.target.value)} required />
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              variant="contained"
+              onClick={handleGenerateMessage}
+              disabled={loading}
+              sx={{ background: "#007bff", color: "white" }}
+            >
+              {loading ? <CircularProgress size={20} sx={{ color: "white", marginRight: 1 }} /> : "Generate Email"}
+            </Button>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Body"
+              fullWidth
+              multiline
+              rows={10}
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+            />
+          </Grid>
 
             <Grid item xs={12}>
               <FormControl fullWidth>
