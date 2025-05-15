@@ -188,6 +188,9 @@ BASE_URL = "http://localhost:8000"
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
 }
 
 ALLOWED_HOSTS = ['127.0.0.1','localhost','172.26.208.1','192.168.56.1','10.102.69.3', '192.168.177.145', '10.212.2.185']

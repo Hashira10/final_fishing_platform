@@ -31,34 +31,45 @@ def login_template_view(request, recipient_id, message_id, platform):
 
 
 class ClickLogViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = ClickLog.objects.select_related('recipient').order_by('-timestamp')
+    queryset = ClickLog.objects.none()
     serializer_class = ClickLogSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return ClickLog.objects.select_related('recipient').filter(user=self.request.user).order_by('-timestamp')
 
 
 class CredentialLogViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = CredentialLog.objects.select_related('recipient').order_by('-timestamp')
+    queryset = CredentialLog.objects.none()
     serializer_class = CredentialLogSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return CredentialLog.objects.select_related('recipient').filter(user=self.request.user).order_by('-timestamp')
 
 
 class SenderViewSet(viewsets.ModelViewSet):
-    queryset = Sender.objects.none()  # Placeholder queryset
+    queryset = Sender.objects.none()
     serializer_class = SenderSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
-        logger.info(f"Запрос от пользователя: {user} (ID: {user.id})")
-        # Показываем только отправителей, добавленных текущим пользователем
         return Sender.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        # Устанавливаем текущего пользователя как владельца записи
         serializer.save(user=self.request.user)
 
 
 class RecipientGroupViewSet(viewsets.ModelViewSet):
-    queryset = RecipientGroup.objects.all()
+    queryset = RecipientGroup.objects.none()
     serializer_class = RecipientGroupSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return RecipientGroup.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
     @action(detail=True, methods=['post'])
     def add_recipient(self, request, pk=None):
@@ -105,10 +116,16 @@ class RecipientGroupViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-
 class RecipientViewSet(viewsets.ModelViewSet):
-    queryset = Recipient.objects.all()
+    queryset = Recipient.objects.none()
     serializer_class = RecipientSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Recipient.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
     @action(detail=True, methods=['put'])
     def update_recipient(self, request, pk=None):
@@ -134,8 +151,15 @@ def send_email_async(email):
 
 
 class MessageViewSet(viewsets.ModelViewSet):
-    queryset = Message.objects.all()
+    queryset = Message.objects.none()
     serializer_class = MessageSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Message.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
     @action(detail=False, methods=['post'])
     def preview(self, request):

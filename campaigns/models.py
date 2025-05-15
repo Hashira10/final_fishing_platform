@@ -13,6 +13,7 @@ class Sender(models.Model):
         return self.smtp_username
 
 class RecipientGroup(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     recipients = models.ManyToManyField('Recipient')
 
@@ -20,6 +21,7 @@ class RecipientGroup(models.Model):
         return self.name
 
 class Recipient(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100, default="unknown", blank=True, null=True)
     last_name = models.CharField(max_length=100, default="unknown", blank=True, null=True)
     email = models.EmailField()
@@ -30,6 +32,7 @@ class Recipient(models.Model):
 
 
 class Message(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     sender = models.ForeignKey(Sender, on_delete=models.CASCADE)
     recipient_group = models.ForeignKey(RecipientGroup, on_delete=models.CASCADE)
     recipients = models.ManyToManyField(Recipient, blank=True) 
@@ -46,6 +49,7 @@ class Message(models.Model):
 
 
 class ClickLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipient = models.ForeignKey("Recipient", on_delete=models.CASCADE, null=True, blank=True)
     message = models.ForeignKey("Message", on_delete=models.CASCADE, null=True, blank=True)
     ip_address = models.GenericIPAddressField()
@@ -59,6 +63,7 @@ class ClickLog(models.Model):
 
 
 class CredentialLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipient = models.ForeignKey("Recipient", on_delete=models.CASCADE, null=True, blank=True)
     message = models.ForeignKey("Message", on_delete=models.CASCADE, null=True, blank=True)
     email = models.EmailField()

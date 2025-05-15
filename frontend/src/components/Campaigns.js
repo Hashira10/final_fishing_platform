@@ -206,6 +206,11 @@ const Campaigns = () => {
                   <InputLabel>Sender</InputLabel>
                   <Select value={selectedSender} onChange={(e) => setSelectedSender(e.target.value)} disabled={loading || sending}>
                     <MenuItem value="">Select Sender</MenuItem>
+                    {/*if (!Array.isArray(senders)) {*/}
+                    {/*  console.error('Senders is not an array:', senders);*/}
+                    {/*  return <p>Ошибка: данные не загружены.</p>;*/}
+                    {/*}*/}
+
                     {senders.map((sender) => (
                       <MenuItem key={sender.id} value={sender.id}>
                         {sender.smtp_username}

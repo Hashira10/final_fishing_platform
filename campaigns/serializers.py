@@ -2,10 +2,11 @@ from rest_framework import serializers
 from .models import Sender, RecipientGroup, Recipient, Message, ClickLog, CredentialLog
 
 class SenderSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = Sender
         fields = '__all__'
-        read_only_fields = ['user']
 
 
 class RecipientSerializer(serializers.ModelSerializer):
@@ -20,6 +21,7 @@ class RecipientSerializer(serializers.ModelSerializer):
 
 class RecipientGroupSerializer(serializers.ModelSerializer):
     recipients = RecipientSerializer(many=True)
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = RecipientGroup
@@ -40,13 +42,15 @@ class RecipientGroupSerializer(serializers.ModelSerializer):
 
         return group
 
+
 class MessageSerializer(serializers.ModelSerializer):
     recipient_group = RecipientGroupSerializer()
     recipients = RecipientSerializer(many=True, read_only=True)
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Message
-        fields = ['id', 'sender', 'recipient_group', 'recipients', 'campaign_name', 'subject', 'body', 'link', 'sent_at', 'host']
+        fields = ['id', 'sender', 'recipient_group', 'recipients', 'campaign_name', 'subject', 'body', 'link', 'sent_at', 'host', 'user']
 
     def to_representation(self, instance):
         """
@@ -58,20 +62,19 @@ class MessageSerializer(serializers.ModelSerializer):
         return data
 
 
-
 class ClickLogSerializer(serializers.ModelSerializer):
-    recipient = RecipientSerializer() 
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    recipient = RecipientSerializer()
 
     class Meta:
         model = ClickLog
         fields = '__all__'
 
+
 class CredentialLogSerializer(serializers.ModelSerializer):
-    recipient = RecipientSerializer() 
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    recipient = RecipientSerializer()
 
     class Meta:
         model = CredentialLog
         fields = '__all__'
-
-
-
