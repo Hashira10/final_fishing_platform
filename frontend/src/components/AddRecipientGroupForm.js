@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axiosInstance from '../axiosInstance';
 import * as XLSX from "xlsx";
 import Papa from "papaparse";
 import { API_BASE_URL } from "../config";
@@ -117,7 +117,7 @@ const AddRecipientGroupForm = () => {
     };
   
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/recipient_groups/`, groupData, {
+      const response = await axiosInstance.post(`${API_BASE_URL}/api/recipient_groups/`, groupData, {
         headers: { "Content-Type": "application/json" },
       });
   

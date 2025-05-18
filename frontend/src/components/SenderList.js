@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from '../axiosInstance';
 import { Link } from "react-router-dom";
 import { API_BASE_URL } from '../config';
 import {
@@ -23,10 +23,8 @@ const SenderList = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
-    axios
-      .get(`${API_BASE_URL}/api/senders/`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
+    axiosInstance
+      .get(`${API_BASE_URL}/api/senders/`)
       .then((response) => setSenders(response.data))
       .catch((error) => {
         console.error("Error fetching senders:", error);
@@ -36,7 +34,7 @@ const SenderList = () => {
   }, []);
   
   const handleDeleteSender = (senderId) => {
-    axios
+    axiosInstance
       .delete(`${API_BASE_URL}/api/senders/${senderId}/`)
       .then(() => {
         setSenders(senders.filter((sender) => sender.id !== senderId));
@@ -49,6 +47,10 @@ const SenderList = () => {
         setOpenSnackbar(true);
       });
   };
+
+  if (!Array.isArray(senders)) {
+    return <div>Ошибка: данные не загружены или нет доступа.</div>;
+  }
 
   return (
     <Container maxWidth="md">

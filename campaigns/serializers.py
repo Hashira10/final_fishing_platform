@@ -25,7 +25,7 @@ class RecipientGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RecipientGroup
-        fields = ['id', 'name', 'recipients']
+        fields = ['id', 'name', 'recipients', 'user']
 
     def create(self, validated_data):
         recipients_data = validated_data.pop('recipients', [])

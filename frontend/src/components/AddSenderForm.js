@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axiosInstance from '../axiosInstance';
 import { API_BASE_URL } from '../config';
 import {
   Container,
@@ -44,7 +44,7 @@ const AddSenderForm = () => {
     };
 
     try {
-      await axios.post(`${API_BASE_URL}/api/senders/`, senderData);
+      await axiosInstance.post(`${API_BASE_URL}/api/senders/`, senderData);
       setMessage({ text: "Sender added successfully!", severity: "success" });
       setSmtpHost("");
       setSmtpPort("");
@@ -65,7 +65,7 @@ const AddSenderForm = () => {
     }
   
     try {
-      await axios.post(`${API_BASE_URL}/api/send_test_email/`, {
+      await axiosInstance.post(`${API_BASE_URL}/api/send_test_email/`, {
         email: testEmail,
         smtp_host: smtpHost,
         smtp_port: smtpPort,

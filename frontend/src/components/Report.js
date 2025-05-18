@@ -35,9 +35,9 @@ const Report = () => {
     const fetchData = async () => {
       try {
         const [messageResponse, clickResponse, credentialResponse] = await Promise.all([
-          fetch(`${API_BASE_URL}/api/messages/`),  
-          fetch(`${API_BASE_URL}/api/click_logs/`),
-          fetch(`${API_BASE_URL}/api/credential_logs/`)
+          fetch(`${API_BASE_URL}/api/messages/`, { credentials: 'include' }),
+          fetch(`${API_BASE_URL}/api/click_logs/`, { credentials: 'include' }),
+          fetch(`${API_BASE_URL}/api/credential_logs/`, { credentials: 'include' })
         ]);
   
         if (!messageResponse.ok || !clickResponse.ok || !credentialResponse.ok) {

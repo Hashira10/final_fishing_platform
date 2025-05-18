@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from './axiosInstance';
 
 import Auth from "./components/Auth";
 import MainLayout from "./components/MainLayout";
@@ -30,7 +30,7 @@ function App() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        axios.get(`${API_BASE_URL}/check-auth/`, { withCredentials: true })
+            axiosInstance.get(`${API_BASE_URL}/check-auth/`)
             .then((response) => {
                 if (response.status === 200) {
                     setIsAuthenticated(true);
@@ -45,9 +45,9 @@ function App() {
         const fetchData = async () => {
           try {
             const [messageResponse, clickResponse, credentialResponse] = await Promise.all([
-              fetch(`${API_BASE_URL}/api/messages/`),
-              fetch(`${API_BASE_URL}/api/click_logs/`),
-              fetch(`${API_BASE_URL}/api/credential_logs/`)
+              fetch(`${API_BASE_URL}/api/messages/`, { credentials: 'include' }),
+              fetch(`${API_BASE_URL}/api/click_logs/`, { credentials: 'include' }),
+              fetch(`${API_BASE_URL}/api/credential_logs/`, { credentials: 'include' })
             ]);
       
             if (!messageResponse.ok || !clickResponse.ok || !credentialResponse.ok) {

@@ -49,7 +49,4 @@ urlpatterns = [
     path("change-password/", change_password_view, name="change-password"),
     path('change-username/', change_username_view, name='change-username'),
     path('current-user/', current_user_view),
-
 ]
-
-

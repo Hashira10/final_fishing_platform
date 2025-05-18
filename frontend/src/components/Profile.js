@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from '../axiosInstance';
 import { API_BASE_URL } from "../config";
 import {
     Container,
@@ -37,8 +37,8 @@ const Profile = () => {
 
     // Загружаем текущий username при монтировании
     useEffect(() => {
-        axios
-            .get(`${API_BASE_URL}/current-user/`, { withCredentials: true })
+        axiosInstance
+            .get(`${API_BASE_URL}/current-user/`)
             .then((res) => {
                 setCurrentUsername(res.data.username);
             })
@@ -57,18 +57,12 @@ const Profile = () => {
         try {
             const csrfToken = getCookie("csrftoken");
 
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${API_BASE_URL}/change-password/`,
                 {
                     current_password: currentPassword,
                     new_password: newPassword,
                     confirm_password: confirmPassword,
-                },
-                {
-                    withCredentials: true,
-                    headers: {
-                        "X-CSRFToken": csrfToken,
-                    },
                 }
             );
 
@@ -96,15 +90,9 @@ const Profile = () => {
         try {
             const csrfToken = getCookie("csrftoken");
 
-            const response = await axios.patch(
+            const response = await axiosInstance.patch(
                 `${API_BASE_URL}/change-username/`,
-                { new_username: newUsername },
-                {
-                    withCredentials: true,
-                    headers: {
-                        "X-CSRFToken": csrfToken,
-                    },
-                }
+                { new_username: newUsername }
             );
 
             setUsernameMessage(response.data.message);

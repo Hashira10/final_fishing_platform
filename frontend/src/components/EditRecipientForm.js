@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from '../axiosInstance';
 import { useParams, useNavigate } from "react-router-dom";
 import { API_BASE_URL } from '../config';
 import {
@@ -26,7 +26,7 @@ const EditRecipientForm = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
-    axios
+    axiosInstance
       .get(`${API_BASE_URL}/api/recipients/${recipientId}/`)
       .then((response) => {
         setRecipientData(response.data);
@@ -45,7 +45,7 @@ const EditRecipientForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
+    axiosInstance
       .put(`${API_BASE_URL}/api/recipients/${recipientId}/`, recipientData)
       .then(() => {
         setMessage({ text: "Recipient updated successfully!", severity: "success" });

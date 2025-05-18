@@ -43,8 +43,8 @@ const Campaigns = () => {
     const fetchData = async () => {
       try {
         const [sendersRes, groupsRes] = await Promise.all([
-          fetch(`${API_BASE_URL}/api/senders/`),
-          fetch(`${API_BASE_URL}/api/recipient_groups/`)
+          fetch(`${API_BASE_URL}/api/senders/`, { credentials: 'include' }),
+          fetch(`${API_BASE_URL}/api/recipient_groups/`, { credentials: 'include' })
         ]);
 
         const sendersData = await sendersRes.json();
@@ -187,7 +187,6 @@ const Campaigns = () => {
     }
   };
 
-
   return (
     <Container maxWidth="md" sx={{ marginBottom: 8 }}>
       <Paper elevation={3} sx={{ padding: 3, marginTop: 4 }}>
@@ -206,10 +205,6 @@ const Campaigns = () => {
                   <InputLabel>Sender</InputLabel>
                   <Select value={selectedSender} onChange={(e) => setSelectedSender(e.target.value)} disabled={loading || sending}>
                     <MenuItem value="">Select Sender</MenuItem>
-                    {/*if (!Array.isArray(senders)) {*/}
-                    {/*  console.error('Senders is not an array:', senders);*/}
-                    {/*  return <p>Ошибка: данные не загружены.</p>;*/}
-                    {/*}*/}
 
                     {senders.map((sender) => (
                       <MenuItem key={sender.id} value={sender.id}>

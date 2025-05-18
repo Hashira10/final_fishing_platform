@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from '../axiosInstance';
 import { useParams, Link } from "react-router-dom";
 import { API_BASE_URL } from '../config';
 import {
@@ -29,7 +29,7 @@ const RecipientList = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
-    axios.get(`${API_BASE_URL}/api/recipient_groups/${groupId}/`)
+    axiosInstance.get(`${API_BASE_URL}/api/recipient_groups/${groupId}/`)
       .then(response => setRecipients(response.data.recipients))
       .catch(error => console.error("Error fetching recipients:", error));
   }, [groupId]);
@@ -41,10 +41,10 @@ const RecipientList = () => {
       return;
     }
 
-    axios.post(`${API_BASE_URL}/api/recipients/`, newRecipient)
+    axiosInstance.post(`${API_BASE_URL}/api/recipients/`, newRecipient)
       .then(response => {
         const createdRecipient = response.data;
-        return axios.post(`${API_BASE_URL}/api/recipient_groups/${groupId}/add_recipient/`, { recipient_id: createdRecipient.id });
+        return axiosInstance.post(`${API_BASE_URL}/api/recipient_groups/${groupId}/add_recipient/`, { recipient_id: createdRecipient.id });
       })
       .then(() => {
         setRecipients(prevRecipients => [...prevRecipients, newRecipient]);
@@ -60,7 +60,7 @@ const RecipientList = () => {
   };
 
   const handleDeleteRecipient = (recipientId) => {
-    axios.delete(`${API_BASE_URL}/api/recipients/${recipientId}/`)
+    axiosInstance.delete(`${API_BASE_URL}/api/recipients/${recipientId}/`)
       .then(() => {
         setRecipients(recipients.filter(recipient => recipient.id !== recipientId));
         setMessage({ text: "Recipient deleted successfully!", severity: "success" });

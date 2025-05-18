@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axiosInstance from '../axiosInstance';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from '../config';
@@ -23,7 +24,7 @@ const RecipientGroupList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(API_BASE_URL + '/api/recipient_groups/')
+    axios.get(API_BASE_URL + '/api/recipient_groups/', { withCredentials: true })
       .then(response => setRecipientGroups(response.data))
       .catch(error => console.error("Error fetching recipient groups:", error));
   }, []);
@@ -34,7 +35,7 @@ const RecipientGroupList = () => {
 
   const handleDeleteGroup = (groupId) => {
     if (window.confirm("Are you sure you want to delete this group?")) {
-      axios.delete(`${API_BASE_URL}/api/recipient_groups/${groupId}/`)
+      axiosInstance.delete(`${API_BASE_URL}/api/recipient_groups/${groupId}/`)
         .then(() => {
           setRecipientGroups(prevGroups => prevGroups.filter(group => group.id !== groupId));
           setMessage({ text: "Group deleted successfully!", severity: "success" });
