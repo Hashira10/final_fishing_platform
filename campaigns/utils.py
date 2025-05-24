@@ -3,7 +3,7 @@ from openai import OpenAI
 import google.generativeai as genai
 
 def generate_phishing_email_open_ai(subject, employee_name):
-    client = OpenAI(api_key=os.getenv("OPEN_AI_API_KEY"))
+    client = OpenAI(api_key=os.environ.get("OPEN_AI_API_KEY"))
     prompt = f"""
     Generate several phishing emails in HTML format with the subject '{subject}' in russian.
     - Start the whole message with <!DOCTYPE html> and just separate them with "-----" 
@@ -31,9 +31,9 @@ def generate_phishing_email_open_ai(subject, employee_name):
     return email_body
 
 def generate_phishing_email_gemini(subject, employee_name):
-    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+    genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
     prompt = f"""
-    Generate several formal HTML emails intended for cybersecurity awareness training, with the subject '{subject}'.
+    Generate several formal HTML emails intended for cybersecurity awareness training, with the subject '{subject}' in russian.
     - Start each email with <!DOCTYPE html> and separate them using "-----".
     - Address the recipient by their name: {employee_name}.
     - The emails should demonstrate common tactics used in suspicious or deceptive messages.

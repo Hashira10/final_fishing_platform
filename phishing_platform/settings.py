@@ -13,13 +13,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from decouple import config
 import os
-from dotenv import load_dotenv
 from corsheaders.defaults import default_headers
-
-load_dotenv()
-
-OPEN_AI_API_KEY = os.getenv("OPEN_AI_API_KEY")
-
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,13 +23,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-p$3npw9m*@u-$sje80afd0=ctd@vj!jfab)26rb_=uf%jg#i6j'
+# SECRET_KEY = 'django-insecure-p$3npw9m*@u-$sje80afd0=ctd@vj!jfab)26rb_=uf%jg#i6j'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
+# DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
+# ALLOWED_HOSTS = ['127.0.0.1','localhost','172.26.208.1','192.168.56.1','10.102.69.3', '192.168.177.145', '10.212.2.185']
 
 # Application definition
 
@@ -133,7 +130,10 @@ DATABASES = {
     }
 }
 
+database_url =os.environ.get("DATABASE_URL")
+DATABASES['default'] = dj_database_url.parse(database_url)
 
+# postgresql://fishing_platform_db_user:HkheWbinb4HRSQEokOPCkOMQES5HqpSK@dpg-d0p1fjbe5dus73dcpiog-a.oregon-postgres.render.com/fishing_platform_db
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -189,5 +189,3 @@ BASE_URL = "http://localhost:8000"
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
-
-ALLOWED_HOSTS = ['127.0.0.1','localhost','172.26.208.1','192.168.56.1','10.102.69.3', '192.168.177.145', '10.212.2.185']
